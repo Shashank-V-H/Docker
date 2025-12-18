@@ -1,0 +1,12 @@
+# Dockerfile.alpine
+FROM alpine:latest
+
+# Install bash and figlet
+RUN apk add --no-cache bash figlet
+
+# Copy the script
+COPY print-message.sh /print-message.sh
+RUN chmod +x /print-message.sh
+
+# Run the script
+CMD ["/print-message.sh"]

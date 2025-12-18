@@ -170,3 +170,94 @@ docker run -it shashankvh/greet
 <!-- * Improve ENTRYPOINT for more flexibility -->
 <!-- * Set up CI/CD for automated builds -->
 
+
+
+---
+
+# Create a new Dockerfile (optimized for Alpine)
+
+```dockerfile
+# Dockerfile.alpine
+FROM alpine:latest
+
+# Install bash and figlet
+RUN apk add --no-cache bash figlet
+
+# Copy the script
+COPY print-message.sh /print-message.sh
+RUN chmod +x /print-message.sh
+
+# Run the script
+CMD ["/print-message.sh"]
+```
+
+Key differences from Ubuntu:
+
+* Uses **Alpine**, which is very small (~5MB vs Ubuntu ~70MB)
+* Installs packages with `apk` instead of `apt-get`
+* Keeps everything minimal
+
+---
+
+## 2️⃣ Build the Alpine image
+
+```bash
+docker build -f Dockerfile.alpine -t greet:alpine .
+```
+
+* `-f Dockerfile.alpine` tells Docker which file to use
+* `-t greet:alpine` tags it locally as `alpine` version
+
+---
+
+## 3️⃣ Test locally
+
+```bash
+docker run -it greet:alpine
+```
+
+Everything should work exactly like your Ubuntu container.
+
+---
+
+## 4️⃣ Tag images for Docker Hub
+
+### Ubuntu image → v1.0.0
+
+```bash
+docker tag greet:latest shashankvh/greet:v1.0.0
+docker push shashankvh/greet:v1.0.0
+```
+
+### Alpine image → v2.0.0
+
+```bash
+docker tag greet:alpine shashankvh/v2.0.0
+docker push shashankvh/v2.0.0
+```
+
+Now your repository has:
+
+* `v1.0.0` (Ubuntu original)
+* `v2.0.0` (Alpine optimized)
+
+---
+
+## 5️⃣ Run directly from Docker Hub
+
+* Ubuntu first-version:
+
+```bash
+docker run -it shashankvh/greet:v1.0.0
+```
+
+* Alpine latest:
+
+```bash
+docker run -it shashankvh/greet:v2.0.0
+```
+
+
+This version is smaller in size but behaves exactly like the original Ubuntu-based container.
+````
+
